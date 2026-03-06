@@ -1,35 +1,46 @@
-# Mini Banking System (OOP Practice)
+# Mini Banking System (Improved Version)
 
 class BankAccount:
     bank_name = "Rashid National Bank"
+    account_counter = 1000
 
     def __init__(self, name, balance):
         self.name = name
         self.__balance = balance
+        self.account_number = BankAccount.account_counter
+        BankAccount.account_counter += 1
+        self.transactions = []
 
     def deposit(self, amount):
         if amount <= 0:
-            print("Deposit amount must be positive")
+            print("Deposot amount must be positive")
             return
         
         self.__balance += amount
+        self.transactions.append(f"Deposited {amount}")
         print(f"{amount} deposited successfully")
 
 
     def withdraw(self, amount):
         if amount > self.__balance:
-            print("Insufficient balance")
+            print("Insufficient balance.")
+            return
+        
+        self.__balance -= amount
+        self.transactions.append(f"Withdrew {amount}")
+        print(f"{amount} withdrawn successfully")
 
-        else:
-            self.__balance -= amount
-            print(f"{amount} withdrawn successfully")
 
-
-    def show_balance(self):
+    def Show_balance(self):
         print(f"{self.name}'s balance is: {self.__balance}")
 
+    def show_transactions(self):
+        print(f"Transactions history for: {self.name}")
+        for t in self.transactions:
+            print("_", t)
 
-# Child class using inheritance
+
+# Child class
 
 class SavingsAccount(BankAccount):
 
@@ -38,24 +49,41 @@ class SavingsAccount(BankAccount):
         self.interest_rate = interest_rate
 
     def add_interest(self):
-        interest = self,self.interest_rate
-        print(f"Interest rate for {self.name} is {interest}%")
+        interest = self.interest_rate / 100 * self._BankAccount__balance
+        print(f"Interest added: {interest}")
 
-    
-# Creating objects
+# Bank system managing multiple accounts
+
+class Bank:
+
+    def __init__(self):
+        self.accounts = []
+
+    def create_account(self, account):
+        self.accounts.append(account)
+
+    def list_accounts(self):
+        for acc in self.accounts:
+            print(acc.account_number, acc.name)
+
+
+# Sysytem usage
+
+bank = Bank()
 
 account1 = BankAccount("Rashid", 5000)
 account2 = SavingsAccount("Kofi", 10000, 5)
 
-# Using methods
+bank.create_account(account1)
+bank.create_account(account2)
 
 account1.deposit(2000)
 account1.withdraw(1000)
-account1.show_balance()
-
-print("------------------")
 
 account2.deposit(3000)
-account2.add_interest()
-account2.show_balance()
 
+print("\nAll Accounts:")
+bank.list_accounts()
+
+print("\nTransactions History:")
+account1.show_transactions()
