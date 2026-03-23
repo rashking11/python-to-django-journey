@@ -20,6 +20,7 @@ class BankAccount:
 
         # Store transaction history
         self.transactions = []
+        self.load_transaction()
 
     # ============================================
     # 🟢 GETTER (READ VALUE SAFELY)
@@ -60,6 +61,39 @@ class BankAccount:
         # Only update if validation passes
         self.__balance = amount
 
+
+    # ============================================
+    # SAVE FUNCTION
+    # ============================================
+
+    def save_transaction(self, transaction):
+        
+        # Save transactions to a file specific to the account
+        filename = f"{self.account_number}.txt"
+        with open(filename, "a") as file:
+            file.write(transaction + "\n")
+
+    
+
+    # ============================================
+    # LOAD TRANSACTIONS FUNCTION
+    # ============================================
+
+
+    def load_transaction(self):
+
+        # Loads existing transactions from file when account is created.
+        filename = f"{self.account_number}.txt"
+
+        try:
+            with open(filename, "r") as file:
+                self.transactions = [line.strip() for line in file]
+        except FileNotFoundError:
+            self.transactions = []
+
+
+
+
     # ============================================
     # 💰 DEPOSIT METHOD
     # ============================================
@@ -84,7 +118,10 @@ class BankAccount:
         # 3. Setter → self.balance = new value
         self.balance += amount
 
+        transaction = f"Deposited {amount}"
         self.transactions.append(f"Deposited {amount}")
+        # Save Transaction now
+        self.save_transaction(transaction)
         print(f"{amount} deposited successfully")
 
     # ============================================
@@ -106,7 +143,11 @@ class BankAccount:
         # Again uses getter + setter internally
         self.balance -= amount
 
+        transaction = f"Withdrew {amount}"
         self.transactions.append(f"Withdrew {amount}")
+
+        #Save transaction
+        self.save_transaction(transaction)
         print(f"{amount} withdrawn successfully")
 
     # ============================================
